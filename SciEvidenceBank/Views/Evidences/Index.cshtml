@@ -1,0 +1,147 @@
+﻿@model IEnumerable<SciEvidenceBank.Models.Evidence>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Category.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Authors)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Source)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AbstractText)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Url)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FilePath)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsPublished)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ApprovedById)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ApprovedByName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ApprovedAt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedById)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedByName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LikesCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BookmarksCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ViewsCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CitationCount)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Authors)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Source)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Year)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AbstractText)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Url)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FilePath)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsPublished)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApprovedById)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApprovedByName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApprovedAt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedAt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedById)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedByName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LikesCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BookmarksCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ViewsCount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CitationCount)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

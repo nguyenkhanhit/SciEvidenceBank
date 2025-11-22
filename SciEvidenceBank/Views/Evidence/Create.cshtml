@@ -1,0 +1,93 @@
+﻿@model SciEvidenceBank.Models.Evidence
+
+@{
+    ViewBag.Title = "Create Evidence";
+    var categories = ViewBag.Categories as IEnumerable<SciEvidenceBank.Models.Category>;
+}
+
+<h2>Đóng góp dẫn chứng</h2>
+
+@using (Html.BeginForm("Create", "Evidence", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        @Html.LabelFor(m => m.Title)
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", maxlength = 350 })
+        @Html.ValidationMessageFor(m => m.Title)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.Authors)
+        @Html.TextBoxFor(m => m.Authors, new { @class = "form-control", maxlength = 500 })
+        @Html.ValidationMessageFor(m => m.Authors)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.Source)
+        @Html.TextBoxFor(m => m.Source, new { @class = "form-control", maxlength = 500 })
+        @Html.ValidationMessageFor(m => m.Source)
+    </div>
+
+    <div>
+        @Html.LabelFor(m => m.Year)
+        @Html.TextBoxFor(m => m.Year, new { @class = "form-control", type = "number", min = "0" })
+        @Html.ValidationMessageFor(m => m.Year)
+    </div>
+
+    <div>
+        @Html.Label("Category")
+        @Html.DropDownListFor(m => m.CategoryId,
+                 new SelectList(categories ?? Enumerable.Empty<SciEvidenceBank.Models.Category>(), "Id", "Name"),
+                 "-- Select --",
+                 new { @class = "form-control" })
+    </div>
+
+    <div style="margin-top:12px;">
+        @Html.LabelFor(m => m.AbstractText, "Content")
+        @Html.TextAreaFor(m => m.AbstractText, new { @id = "AbstractText", @class = "form-control tinymce", rows = 10 })
+        @Html.ValidationMessageFor(m => m.AbstractText)
+        <small class="form-text text-muted">You may use the rich text editor to format the evidence content.</small>
+    </div>
+
+    <div style="margin-top:12px;">
+        <label>Tags (comma separated)</label>
+        <input type="text" name="tags" class="form-control" placeholder="tag1, tag2, tag3" />
+    </div>
+
+    <div style="margin-top:12px;">
+        <button type="submit" class="btn btn-primary">Create</button>
+        @Html.ActionLink("Back to list", "Index", "Evidence", null, new { @class = "btn btn-link" })
+    </div>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <!-- TinyMCE (local file) -->
+    <script src="~/assets/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#AbstractText',
+            height: 350,
+            menubar: false,
+            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
+            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | code',
+            content_css: '@Url.Content("~/Content/theme.css")',
+            relative_urls: false,
+            remove_script_host: false,
+            convert_urls: true,
+            setup: function (editor) {
+                // Ensure textarea is updated when editor changes and on form submit
+                editor.on('change', function () {
+                    tinymce.triggerSave();
+                });
+            }
+        });
+
+        // ensure TinyMCE content saved on normal form submission too
+        $('form').on('submit', function () {
+            if (tinymce.get('AbstractText')) tinymce.get('AbstractText').save();
+        });
+    </script>
+}

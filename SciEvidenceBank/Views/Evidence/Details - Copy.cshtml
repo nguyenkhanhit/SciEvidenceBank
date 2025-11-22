@@ -1,0 +1,126 @@
+﻿@model SciEvidenceBank.Models.Evidence
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Model.Title;
+
+    // Safe header: Authors, Year · Source
+    var authors = (Model.Authors ?? string.Empty).Trim();
+    var year = Model.Year.HasValue ? Model.Year.Value.ToString() : null;
+    var source = (Model.Source ?? string.Empty).Trim();
+
+    var headerParts = new System.Collections.Generic.List<string>();
+    var authorYear = string.Empty;
+
+    if (!string.IsNullOrEmpty(authors))
+    {
+        authorYear = authors;
+        if (!string.IsNullOrEmpty(year))
+        {
+            authorYear += ", " + year;
+        }
+    }
+    else if (!string.IsNullOrEmpty(year))
+    {
+        authorYear = year;
+    }
+
+    if (!string.IsNullOrEmpty(authorYear))
+    {
+        headerParts.Add(authorYear);
+    }
+    if (!string.IsNullOrEmpty(source))
+    {
+        headerParts.Add(source);
+    }
+
+    var headerText = string.Join(" · ", headerParts);
+}
+<div class="evidence-page" style="background:var(--page-bg);color:var(--text);">
+    <div style="display:flex;gap:18px;">
+        <div style="width:260px;">
+            @Html.Partial("_Sidebar")
+        </div>
+
+        <div style="flex:1;">
+            <div class="surface-card">
+                <div style="display:flex;justify-content:space-between;">
+                    <div>
+                        <div class="evidence-header-meta">@Html.Raw(headerText)</div>
+                        <h4 class="evidence-title">@Html.Raw(Model.Title)</h4>
+                        <div class="evidence-abstract">@Html.Raw(Model.AbstractText)</div>
+                        <div style="margin-top:12px;">
+                            @foreach (var et in Model.EvidenceTags ?? Enumerable.Empty<SciEvidenceBank.Models.EvidenceTag>())
+                            {
+                                <span class="tag-chip">@Html.Raw(Html.Encode(et.Tag.Name))</span>
+                            }
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="color:var(--muted-text);margin-bottom:8px;">@(Model.Category != null ?Model.Category.Name : "")</div>
+
+                        <div style="margin-top:8px;">
+                            <button id="btn-like" data-id="@Model.Id" class="btn-primary-theme">Like (@Model.LikesCount)</button>
+                            <button id="btn-bookmark" data-id="@Model.Id" class="btn-outline-theme">Trích dẫn</button>
+                            <a href="@Model.Url" target="_blank" class="link-btn-theme">Tải PDF / Link</a>
+                        </div>
+
+                        @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
+                        {
+                            <div style="margin-top:14px;">
+                                <button id="btn-approve" data-id="@Model.Id" class="btn-success" style="padding:8px 12px;border-radius:6px;border:0;cursor:pointer;margin-bottom:6px;">Phê duyệt</button>
+                                <button id="btn-reject" data-id="@Model.Id" class="btn-danger" style="padding:8px 12px;border-radius:6px;border:0;cursor:pointer;">Từ chối</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div style="margin-top:18px;color:var(--muted-text);font-size:13px;">Trạng thái: @Html.Encode(Model.Status.ToString())</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#btn-like').on('click', function () {
+                var id = $(this).data('id');
+                $.post('@Url.Action("Like","Evidence")', { id: id }, function (res) {
+                    if (res.success) {
+                        $('#btn-like').text('Like (' + res.likes + ')');
+                    }
+                });
+            });
+
+            $('#btn-bookmark').on('click', function () {
+                var id = $(this).data('id');
+                $.post('@Url.Action("Bookmark","Evidence")', { id: id }, function (res) {
+                    if (res.success) {
+                        alert('Đã thêm trích dẫn (demo counter).');
+                    }
+                });
+            });
+
+            $('#btn-approve').on('click', function () {
+                if (!confirm('Xác nhận phê duyệt dẫn chứng này?')) return;
+                var id = $(this).data('id');
+                $.post('@Url.Action("Approve","Evidence")', { id: id }, function (res) {
+                    if (res.success) {
+                        alert('Đã phê duyệt.');
+                        location.reload();
+                    }
+                });
+            });
+
+            $('#btn-reject').on('click', function () {
+                if (!confirm('Xác nhận từ chối dẫn chứng này?')) return;
+                var id = $(this).data('id');
+                $.post('@Url.Action("Reject","Evidence")', { id: id }, function (res) {
+                    if (res.success) {
+                        alert('Đã từ chối.');
+                        location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+}

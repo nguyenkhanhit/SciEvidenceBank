@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Scientific Evidence Bank</title>
+
+    <!--Insert favicon jpeg type-->
+    <link rel="icon" type="image/jpeg" href="~/favicon.png" />
+    <link href="~/favicon.png" rel="apple-touch-icon">
+    @Styles.Render("~/Content/css")
+    <link href="@Url.Content("~/Content/theme.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/dataTables.dataTables.min.css")" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="~/Content/Site.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-custom">
+        <div class="container">
+            @Html.ActionLink("SeBank  |", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li>@Html.ActionLink("Trang chủ", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Giới thiệu", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Dẫn chứng", "Index", "Evidence", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("My Citations", "Index", "MyCitations", new { area = "" }, new { @class = "nav-link" })</li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Create", "Evidence")">
+                                Đóng góp
+                            </a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("admin") || (User.Identity.Name.ToLower().Contains("admin")))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               href="#"
+                               id="adminDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Quản lý
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Categories")">Quản lý thể loại</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("EviIndex", "Evidence")">Quản lý dẫn chứng</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Users")">Quản lý người dùng</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Categories")">Quản lý danh mục</a></li>
+
+                                <li><hr class="dropdown-divider" /></li>
+
+                                <li><a class="dropdown-item" href="@Url.Action("Settings", "Admin")">Cấu hình hệ thống</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                    <li>@Html.ActionLink("Liên hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Scientific Evidence Bank</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/evidence_action.js"></script>
+    <script src="~/Scripts/dataTables.min.js"></script>
+    @RenderSection("scripts", required: false)
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".ripple").forEach(el => {
+                el.addEventListener("click", function (e) {
+                    const circle = document.createElement("span");
+                    const diameter = Math.max(this.clientWidth, this.clientHeight);
+                    const radius = diameter / 2;
+
+                    circle.style.width = circle.style.height = `${diameter}px`;
+                    circle.style.left = `${e.clientX - this.offsetLeft - radius}px`;
+                    circle.style.top = `${e.clientY - this.offsetTop - radius}px`;
+                    circle.classList.add("ripple-effect");
+
+                    const ripple = this.getElementsByClassName("ripple-effect")[0];
+                    if (ripple) ripple.remove();
+
+                    this.appendChild(circle);
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .ripple-effect {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: rippleAnim 0.6s linear;
+            pointer-events: none;
+        }
+
+
+        @@keyframes rippleAnim {
+            to
+
+        {
+            transform: scale(3);
+            opacity: 0;
+        }
+
+    </style>
+
+</body>
+</html>

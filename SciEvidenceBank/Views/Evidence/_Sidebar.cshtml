@@ -1,0 +1,98 @@
+﻿@using System.Collections
+@{
+    var categories = ViewBag.Categories as IEnumerable;
+    var topLiked = ViewBag.TopLiked as IEnumerable;
+    var topCited = ViewBag.TopCited as IEnumerable;
+
+    Func<object, string, object> GetProp = (obj, name) =>
+    {
+        if (obj == null) return null;
+        var prop = obj.GetType().GetProperty(name);
+        return prop != null ? prop.GetValue(obj, null) : null;
+    };
+
+    string Truncate(object value, int max = 80)
+    {
+        if (value == null) return string.Empty;
+        var s = value.ToString();
+        return s.Length <= max ? s : s.Substring(0, max - 1) + "…";
+
+
+    }
+}
+<div class="sidebar-surface">
+
+    <h4><i class="fa-solid fa-list"></i> Danh mục</h4>
+
+    <ul>
+        <li class="sidebar-item @(ViewBag.CategoryId == null ? "active" : "")">
+            <a href="@Url.Action("Index","Evidence")" class="ripple">
+                <i class="fa-solid fa-layer-group icon-lit"></i> Tất cả danh mục
+            </a>
+        </li>
+
+        @foreach (var c in categories)
+        {
+            // compute once per loop using reflection helper (categories is non-generic IEnumerable)
+            int categoryId = ViewBag.CategoryId ?? 0;
+            var idObj = GetProp(c, "Id");
+            int cId = 0;
+            if (idObj != null) { int.TryParse(idObj.ToString(), out cId); }
+            var nameObj = GetProp(c, "Name");
+            var displayName = nameObj != null ? nameObj.ToString() : string.Empty;
+
+            <li class="sidebar-item @(categoryId == cId ? "active" : "")">
+                <a href="@Url.Action("Index","Evidence", new { categoryId = cId })" class="ripple">
+                    <i class="fa-solid fa-flask icon-bio"></i> @displayName
+                </a>
+            </li>
+        }
+    </ul>
+
+    <div class="category-divider"></div>
+
+    <div class="popular-box">
+        <h5>Yêu thích nhất</h5>
+        <ul>
+            @foreach (var item in topLiked)
+            {
+                var id = GetProp(item, "Id");
+                var title = Truncate(GetProp(item, "Title"));
+                var likes = GetProp(item, "LikesCount") ?? 0;
+
+                <li class="sidebar-item">
+                    <a href="@Url.Action("Details","Evidence", new { id = id })" class="ripple">
+                        @title
+                    </a>
+                    <div style="margin-top:4px;color:gray;font-size:12px;">❤ @likes lượt thích</div>
+                </li>
+            }
+        </ul>
+    </div>
+
+
+    <div style="height:12px;"></div> <!-- separator space -->
+
+    <div style="margin-top:0;padding:12px;background:var(--surface);border-radius:8px;">
+        <h5 style="margin:0 0 8px 0;color:var(--primary-800);">Trích dẫn nhiều nhất</h5>
+        @if (topCited != null)
+        {
+            <ul style="list-style:none;padding:0;margin:0;font-size:13px;color:var(--primary);">
+                @foreach (var item in topCited)
+                {
+                    var id = GetProp(item, "Id");
+                    var title = Truncate(GetProp(item, "Title"));
+                    var cites = GetProp(item, "CitationCount") ?? GetProp(item, "CitationsCount") ?? 0;
+                    <li style="padding:8px 6px;border-bottom:1px dashed rgba(0,0,0,0.06);">
+                        <a href="@Url.Action("Details","Evidence", new { id = id })" style="color:var(--primary);text-decoration:none;font-weight:500;">@title</a>
+                        <div style="margin-top:6px;color:var(--muted-text);font-size:12px;">🔁 @cites trích dẫn</div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <div style="color:var(--muted-text);font-size:13px;">Không có dữ liệu.</div>
+        }
+    </div>
+</div>

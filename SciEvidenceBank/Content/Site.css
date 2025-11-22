@@ -1,0 +1,172 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* === ANIMATION LOAD-IN === */
+.sidebar-surface {
+    animation: sidebarFadeIn 0.45s ease-out;
+}
+
+@keyframes sidebarFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* === SIDEBAR BOX === */
+.sidebar-surface {
+    background: #f2f7ff;
+    border-radius: 14px;
+    border: 1.5px dashed #bad0ff;
+    padding: 16px;
+}
+
+    /* Title */
+    .sidebar-surface h4 {
+        background: #c5d8ff;
+        margin: 0 0 14px 0;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #1a3b7c;
+    }
+
+    /* Category list */
+    .sidebar-surface ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+        .sidebar-surface ul li {
+            padding: 4px 0;
+        }
+
+/* === Ripple hiệu ứng Material Design === */
+.sidebar-item {
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Link */
+    .sidebar-item a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        color: #1a3b7c;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.18s ease;
+    }
+
+        /* Icon động */
+        .sidebar-item a i {
+            font-size: 15px;
+            opacity: 0.85;
+            transition: 0.18s ease;
+        }
+
+        /* Hover */
+        .sidebar-item a:hover {
+            background: linear-gradient(to right, #deeaff, #edf3ff);
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            color: #0d2a65;
+        }
+
+            .sidebar-item a:hover i {
+                transform: scale(1.18);
+                opacity: 1;
+            }
+
+    /* === ACTIVE CATEGORY (highlight) === */
+    .sidebar-item.active > a {
+        background: #d6e4ff;
+        font-weight: 600;
+        box-shadow: inset 0 0 0 2px #9cbcff;
+        color: #0b2c83;
+    }
+
+        .sidebar-item.active > a i {
+            opacity: 1;
+            color: #0a2d91 !important;
+        }
+
+/* === ICON THEO NGÀNH === */
+.icon-physics {
+    color: #0072e3;
+}
+
+.icon-bio {
+    color: #009c48;
+}
+
+.icon-chem {
+    color: #b3005f;
+}
+
+.icon-cs {
+    color: #0057d8;
+}
+
+.icon-social {
+    color: #8e44ad;
+}
+
+.icon-math {
+    color: #d35400;
+}
+
+.icon-lit {
+    color: #34495e;
+}
+
+/* === DIVIDER GIỮA CATEGORY & POPULAR === */
+.category-divider {
+    height: 1px;
+    background: #d0dcff;
+    margin: 16px 0;
+    border-radius: 10px;
+}
+
+/* === POPULAR BOX === */
+.popular-box {
+    background: #ffffff;
+    border: 1px solid #e7eefe;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+    .popular-box h5 {
+        margin: 0 0 12px 0;
+        font-weight: 600;
+        color: #1a3b7c;
+    }

@@ -1,0 +1,19 @@
+﻿@model SciEvidenceBank.Models.Evidence
+
+<div class="evidence-detail">
+    <h1>@Html.Raw(Model.Title)</h1>
+    <div class="evidence-abstract">@Html.Raw(Model.AbstractText)</div>
+
+    <div class="meta" style="font-size:13px;color:var(--muted-text);margin-top:8px;">
+        <span class="meta-likes" style="margin-right:12px;">👍 @Model.LikesCount</span>
+        <span class="meta-bookmarks" style="margin-right:12px;">🔖 @Model.BookmarksCount</span>
+        <span class="meta-citations" data-evidence-id="@Model.Id" style="margin-right:12px;">🔁 @Model.CitationCount</span>
+        <span class="meta-views">👁️ @Model.ViewsCount</span>
+    </div>
+
+    <div style="margin-top:12px;">
+        <button class="btn-cite btn-outline-theme" data-id="@Model.Id">Trích dẫn</button>
+    </div>
+</div>
+
+@* (Optional) you can include modal markup here if you prefer server-side markup; otherwise the JS will create a fallback modal if needed. *@

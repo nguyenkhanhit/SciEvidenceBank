@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Scientific Evidence Bank - Khoa học trong tầm tay bạn.</h1>
+        <p class="lead">Chào mừng bạn đến với Scientific Evidence Bank – hệ thống Ngân hàng Bằng chứng Khoa học tiên tiến, được xây dựng như một kho lưu trữ tập trung, dễ tiếp cận cho mọi dữ liệu nghiên cứu đã được kiểm chứng..</p>
+        <p><a href="~/Home" class="btn btn-primary btn-md">Bắt đầu &raquo;</a></p>
+    </section>
+
+    <div id="homeSlider" class="carousel slide mb-4" data-bs-ride="carousel">
+
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#homeSlider" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#homeSlider" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#homeSlider" data-bs-slide-to="2"></button>
+        </div>
+
+        <!-- Slides -->
+        <div class="carousel-inner rounded shadow">
+            <div class="carousel-item active">
+                <img src="~/Content/img/img01.jpg" class="d-block w-100" alt="Slide 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Ngân hàng dẫn chứng khoa học</h5>
+                    <p>Nơi lưu trữ các trích dẫn khoa học thông minh.</p>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="~/Content/img/img02.jpg" class="d-block w-100" alt="Slide 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Tạo trích dẫn tự động</h5>
+                    <p>Hỗ trợ APA, MLA, Harvard, Chicago, IEEE.</p>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="~/Content/img/img03.jpg" class="d-block w-100" alt="Slide 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Phục vụ giáo viên & học sinh</h5>
+                    <p>Tối ưu hóa nghiên cứu khoa học tại trường học.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#homeSlider" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+
+        <button class="carousel-control-next" type="button" data-bs-target="#homeSlider" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
+    </div>
+
+</main>

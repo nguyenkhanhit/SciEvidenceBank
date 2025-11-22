@@ -1,0 +1,106 @@
+﻿@model SciEvidenceBank.Models.Evidence
+
+<div class="evidence-card surface-card" data-evidence-id="@Model.Id" style="display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;align-items:flex-start;">
+    <div style="flex:1;">
+        <div class="evidence-header-meta" style="font-size:12px;">
+            @{
+                var authors = (Model.Authors ?? string.Empty).Trim();
+                var year = Model.Year.HasValue ? Model.Year.Value.ToString() : null;
+                var meta = string.Empty;
+                if (!string.IsNullOrEmpty(authors))
+                {
+                    meta = authors;
+                    if (!string.IsNullOrEmpty(year))
+                    {
+                        meta += ", " + year;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(year))
+                {
+                    meta = year;
+                }
+                if (!string.IsNullOrEmpty(Model.Source))
+                {
+                    meta = string.IsNullOrEmpty(meta) ? Model.Source : meta + " · " + Model.Source;
+                }
+            }
+            @Html.Raw(Html.Encode(meta))
+        </div>
+
+        <h4 class="evidence-title" style="margin:6px 0 8px 0;font-size:18px;">@Html.Raw(Model.Title)</h4>
+
+        <div class="evidence-abstract" style="margin-bottom:8px;">@Html.Raw(Model.AbstractText)</div>
+
+        <div class="meta" style="font-size:13px;color:var(--muted-text);">
+            <span class="meta-likes" data-evidence-id="@Model.Id" style="margin-right:12px;">👍 @Model.LikesCount</span>
+            <span class="meta-bookmarks" style="margin-right:12px;">🔖 @Model.BookmarksCount</span>
+            <span class="meta-views">👁️ @Model.ViewsCount</span>
+        </div>
+
+        <div style="margin-top:8px;">
+            @foreach (var et in Model.EvidenceTags ?? Enumerable.Empty<SciEvidenceBank.Models.EvidenceTag>())
+            {
+                <span class="tag-chip">@Html.Raw(Html.Encode(et.Tag.Name))</span>
+            }
+        </div>
+    </div>
+
+    <div style="min-width:150px;text-align:right;">
+        @if (Model.Category != null)
+        {
+            <div class="category-badge" style="margin-bottom:10px;">@Html.Raw(Html.Encode(Model.Category.Name))</div>
+        }
+
+        <div>
+            <button class="btn-like btn-primary-theme" data-id="@Model.Id" style="margin-bottom:6px;cursor:pointer;">Like</button>
+            <button class="btn-cite btn-outline-theme" data-id="@Model.Id" style="margin-left:6px;">Trích dẫn</button>
+            <a href="@Url.Action("Details","Evidence", new { id = Model.Id })" class="link-btn-theme" style="display:inline-block;margin-top:8px;padding:8px 12px;text-decoration:none;">Xem</a>
+        </div>
+    </div>
+</div>
+
+<!-- Citation Modal (one per card) -->
+<div id="citation-modal-@Model.Id" class="citation-modal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;z-index:1200;">
+    <div style="width:640px;background:var(--surface);border-radius:8px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,0.4);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="margin:0;">Tạo Trích dẫn</h3>
+            <button class="citation-close" data-id="@Model.Id" style="background:transparent;border:0;font-size:20px;cursor:pointer;">✕</button>
+        </div>
+
+        <div style="margin-top:12px;padding:12px;background:var(--muted-surface);border-radius:6px;color:var(--muted-text);">
+            @Html.Raw(Html.Encode(Model.AbstractText))
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px;align-items:center; width:100%;">
+            <select id="citation-style-@Model.Id" class="citation-style" style="flex:1;padding:10px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);">
+                <option value="APA">Kiểu APA</option>
+                <option value="MLA">MLA</option>
+                <option value="Harvard">Harvard</option>
+                <option value="Chicago">Chicago / Turabian</option>
+                <option value="IEEE">IEEE</option>
+            </select>
+            <button class="btn-primary-theme citation-generate" data-id="@Model.Id">Tạo</button>
+        </div>
+        <div style="margin-top:12px;padding:12px;background:var(--muted-surface);
+            border-radius:6px;color:var(--muted-text); width:100%; display:block;">
+            <textarea id="citation-result-@Model.Id"
+                      class="citation-result full-width-textarea"
+                      style="display:block;width:100% !important;max-width:100% !important;
+                     box-sizing:border-box;height:120px;margin-top:12px;padding:12px;
+                     border-radius:6px;border:1px solid rgba(0,0,0,0.08);color:var(--text);"
+                      placeholder="Trích dẫn của bạn sẽ xuất hiện ở đây."></textarea>
+        </div>
+        <div class="meta" style="font-size:13px;color:var(--muted-text);">
+            <span class="meta-likes" data-evidence-id="@Model.Id" style="margin-right:12px;">👍 @Model.LikesCount</span>
+            <span class="meta-bookmarks" style="margin-right:12px;">🔖 @Model.BookmarksCount</span>
+            <span class="meta-citations" data-evidence-id="@Model.Id" style="margin-right:12px;">🔁 @Model.CitationCount</span>
+            <span class="meta-views">👁️ @Model.ViewsCount</span>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
+            <button class="btn-outline-theme citation-close" data-id="@Model.Id">Đóng</button>
+            <button class="btn-primary-theme citation-save" data-id="@Model.Id">Sao chép</button>
+        </div>
+    </div>
+</div>
+

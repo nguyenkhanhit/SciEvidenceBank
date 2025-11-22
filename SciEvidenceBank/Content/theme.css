@@ -1,0 +1,267 @@
+﻿
+
+:root {
+    /* Primary (user requested) */
+    --primary: #136ad5;
+    --primary-600: #0f56b0;
+    --primary-800: #0a3f80;
+    /* Complementary / accent (approx complementary orange) */
+    --accent: #d57a13;
+    --accent-600: #b6600f;
+    /* Surfaces and backgrounds */
+    --page-bg: #f2f7ff; /*#f2f7ff;*/ /* very light blue tint */
+    --surface: #ffffff;
+    --muted-surface: #eef5ff;
+    /* Text */
+    --text: #0d2740; /* deep blue for primary text */
+    --muted-text: #294a74; /* secondary text */
+    --inverse-text: #ffffff;
+    /* Chips / tags */
+    --chip-bg: rgba(19,106,213,0.08); /* subtle blue tint */
+    --chip-text: var(--primary);
+    /* Shadows */
+    --shadow: 0 1px 6px rgba(19,106,213,0.08);
+    /* Buttons */
+    --btn-primary-bg: var(--primary);
+    --btn-primary-bg-hover: var(--primary-600);
+    --btn-outline: rgba(19,106,213,0.16);
+    /* Semantic */
+    --success: #16a34a;
+    --danger: #dc2626;
+}
+
+/* Navbar */
+.navbar-custom {
+    background: linear-gradient(90deg, var(--primary), var(--primary-600));
+    color: var(--inverse-text);
+    box-shadow: 0 2px 6px rgba(13,40,80,0.08);
+}
+
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link,
+    .navbar-custom .nav-item a {
+        color: var(--inverse-text) !important;
+    }
+
+    .navbar-custom .navbar-toggler-icon {
+        filter: invert(1);
+    }
+
+/* Page layout defaults */
+body {
+    background: var(--page-bg);
+    color: var(--text);
+}
+
+/* Evidence page container */
+.evidence-page {
+    padding: 24px;
+    min-height: 720px;
+}
+
+/* Card surface used in Evidence list/details */
+.surface-card {
+    background: var(--surface);
+    padding: 18px;
+    border-radius: 8px;
+    color: var(--text);
+    box-shadow: var(--shadow);
+}
+
+/* Header text in evidence */
+.evidence-header-meta {
+    color: var(--muted-text);
+}
+
+.evidence-title {
+    margin: 6px 0 12px 0;
+    color: var(--text);
+}
+
+.evidence-abstract {
+    color: #2b4b78; /* slightly muted blue for body text */
+}
+
+/* Tag chips */
+.tag-chip {
+    display: inline-block;
+    background: var(--chip-bg);
+    color: var(--chip-text);
+    padding: 6px 10px;
+    border-radius: 999px;
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+/* Buttons */
+.btn-primary-theme {
+    background: var(--btn-primary-bg);
+    color: var(--inverse-text);
+    border: 0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+    .btn-primary-theme:hover {
+        background: var(--btn-primary-bg-hover);
+    }
+
+.btn-outline-theme {
+    background: transparent;
+    border: 1px solid var(--btn-outline);
+    color: var(--primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+    .btn-outline-theme:hover {
+        background: rgba(19,106,213,0.06);
+    }
+
+/* Link button */
+.link-btn-theme {
+    display: block;
+    margin-top: 8px;
+    background: var(--primary-600);
+    color: var(--inverse-text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+    .link-btn-theme:hover {
+        background: var(--primary-800);
+    }
+
+/* Sidebar */
+.sidebar-surface {
+    width: 260px;
+    padding: 16px;
+    background: linear-gradient(180deg, var(--muted-surface), var(--surface));
+    border-radius: 8px;
+    color: var(--primary-800);
+    border: 1px dotted var(--chip-text);
+}
+
+/* Small card used in sidebar */
+.sidebar-highlight {
+    margin-top: 18px;
+    background: #f7fbff;
+    padding: 12px;
+    border-radius: 8px;
+    color: var(--muted-text);
+}
+
+/* Evidence card controls */
+.evidence-card .meta {
+    color: var(--muted-text);
+}
+
+.evidence-card .category-badge {
+    background: rgba(19,106,213,0.08);
+    color: var(--primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+/* Semantic buttons (approve/reject) keep green/red for clarity */
+.btn-success {
+    background: var(--success);
+    color: var(--inverse-text);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: var(--inverse-text);
+}
+.full-width-textarea {
+    width: 100%;
+    box-sizing: border-box; /* This is the key property */
+    padding: 5px;
+    border: 1px solid #aaa;
+    resize: vertical; /* Allows vertical resizing only */
+}
+
+.carousel-inner img {
+    height: 500px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.carousel-caption {
+    background: rgba(0,0,0,0.45);
+    padding: 12px 18px;
+    border-radius: 6px;
+}
+
+/* Màu chữ mặc định cho dropdown item */
+.navbar .dropdown-menu .dropdown-item {
+    color: #000 !important; /* chữ đen */
+    background-color: #ffffff; /* nền trắng */
+}
+
+    /* Khi hover */
+    .navbar .dropdown-menu .dropdown-item:hover {
+        background-color: #e9ecef !important; /* nền xám nhạt */
+        color: #000 !important;
+    }
+
+/* Khi dropdown mở thì không đổi màu chữ */
+.navbar .dropdown-toggle {
+    color: #fff !important;
+}
+.category-box {
+    background: #f2f7ff;
+    border-radius: 16px;
+    border: 2px dashed #b8c6e0;
+}
+
+.category-title {
+    background: #cfdcff;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    color: #1a3b7c;
+}
+
+.category-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+    .category-list li {
+        margin-bottom: 16px;
+    }
+
+    .category-list a {
+        text-decoration: none;
+        font-size: 1.15rem;
+        color: #1a3b7c;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        /* animation nhỏ cho hover */
+        transition: all 0.18s ease-in-out;
+    }
+
+        .category-list a i {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            transition: all 0.18s;
+        }
+
+        .category-list a:hover {
+            background: #dbe7ff; /* màu hover đậm hơn #f2f7ff */
+            transform: translateX(4px);
+            color: #0e2a62;
+        }
+
+            .category-list a:hover i {
+                opacity: 1;
+                transform: scale(1.18);
+            }
