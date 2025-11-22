@@ -43,7 +43,8 @@
 
             <li class="sidebar-item @(categoryId == cId ? "active" : "")">
                 <a href="@Url.Action("Index","Evidence", new { categoryId = cId })" class="ripple">
-                    <i class="fa-solid fa-flask icon-bio"></i> @displayName
+                    @*<i class="fa-solid fa-list icon-bio"></i> @displayName*@
+                    <i class="fa-solid fa-book icon-bio"></i> @displayName
                 </a>
             </li>
         }
