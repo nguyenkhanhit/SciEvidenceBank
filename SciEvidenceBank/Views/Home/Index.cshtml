@@ -5,8 +5,8 @@
 <main>
     <section class="row" aria-labelledby="aspnetTitle">
         <h1 id="title">Scientific Evidence Bank - Khoa học trong tầm tay bạn.</h1>
-        <p class="lead">Chào mừng bạn đến với Scientific Evidence Bank – hệ thống Ngân hàng Bằng chứng Khoa học tiên tiến, được xây dựng như một kho lưu trữ tập trung, dễ tiếp cận cho mọi dữ liệu nghiên cứu đã được kiểm chứng..</p>
-        <p><a href="~/Home" class="btn btn-primary btn-md">Bắt đầu &raquo;</a></p>
+        <p class="lead">Chào mừng bạn đến với Scientific Evidence Bank – hệ thống Ngân hàng Bằng chứng Khoa học tiên tiến, được xây dựng như một kho lưu trữ tập trung, dễ tiếp cận cho mọi dữ liệu nghiên cứu đã được kiểm chứng.. <a href="~/Evidence" class="btn btn-primary btn-md">Bắt đầu &raquo;</a></p>
+        
     </section>
 
     <div id="homeSlider" class="carousel slide mb-4" data-bs-ride="carousel">
@@ -58,4 +58,24 @@
 
     </div>
 
+
+  
+    <div class="jumbotron">
+        <h1>Welcome to SciEvidenceBank</h1>
+        <p class="lead">Discover and share research evidence.</p>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            @Html.Partial("_Recommendations", ViewBag.Recommendations as List<SciEvidenceBank.Models.Evidence>)
+        </div>
+    }
+    else
+    {
+        <p>
+            <a class="btn btn-primary btn-lg" href="@Url.Action("Login", "Account")">Sign in</a>
+            <a class="btn btn-default btn-lg" href="@Url.Action("Register", "Account")">Register</a>
+        </p>
+    }
 </main>

@@ -1,0 +1,37 @@
+﻿
+@model List<SciEvidenceBank.Models.Evidence>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Recommendations</strong></div>
+        <div class="panel-body">
+            <p>No recommendations available yet.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Recommended for you</strong></div>
+        <div class="list-group">
+            @foreach (var e in Model)
+            {
+                <a href="@Url.Action("Details", "Evidence", new { id = e.Id })" class="list-group-item">
+                    <h4 class="list-group-item-heading">@Html.Raw(e.Title)</h4>
+                    <p class="list-group-item-text">
+                        @if (!string.IsNullOrEmpty(e.Authors))
+                        {<span>@Html.Raw(e.Authors)</span>;
+                    }
+                        @if (e.Category != null)
+                        {<span> — @Html.Raw(e.Category.Name)</span>;
+                    }
+                        <span class="text-muted" style="float:right;">
+                            Likes: @e.LikesCount &nbsp; Views: @e.ViewsCount &nbsp; Cites: @e.CitationCount
+                        </span>
+                    </p>
+                </a>
+            }
+        </div>
+    </div>
+}

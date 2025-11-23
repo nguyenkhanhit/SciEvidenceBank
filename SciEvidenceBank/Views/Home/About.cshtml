@@ -2,15 +2,291 @@
     ViewBag.Title = "About";
 }
 <main aria-labelledby="title">
-    <h2><span style="font-size: 1.2em;">💡</span> Giới thiệu về <strong>Scientific Evidence Bank</strong>: Nền tảng của Sự Thật</h2>
+    <div class="container">
+        <div class="mb-4 d-flex align-items-center gap-3">
+            <h1 class="h4 section-title m-0"><i class="fa-solid fa-book-open-reader me-2"></i> Hướng dẫn các kiểu trích dẫn (Quick Reference)</h1>
+            <span class="badge-style">APA • MLA • IEEE • Harvard • Chicago</span>
+        </div>
 
-    <p>Bạn đang tìm kiếm bằng chứng khoa học <strong>chính xác</strong>, <strong>đáng tin cậy</strong>, và <strong>minh bạch</strong> để đưa ra quyết định quan trọng?</p>
+        <div class="row gx-4">
+            <div class="col-lg-8">
+                <!-- Accordion -->
+                <div class="accordion" id="citationAccordion">
 
-    <p>Chào mừng bạn đến với <strong>Scientific Evidence Bank</strong> – hệ thống Ngân hàng Bằng chứng Khoa học tiên tiến, được xây dựng như một kho lưu trữ tập trung, dễ tiếp cận cho mọi dữ liệu nghiên cứu đã được kiểm chứng.</p>
+                    <!-- APA -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingAPA">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAPA" aria-expanded="false" aria-controls="collapseAPA">
+                                <strong>APA (American Psychological Association) — 7th Ed.</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseAPA" class="accordion-collapse collapse" aria-labelledby="headingAPA" data-bs-parent="#citationAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Thường dùng:</strong> khoa học xã hội, giáo dục, tâm lý, y tế.</p>
+                                <p><strong>Đặc điểm:</strong> (Author, Year) trong văn bản; danh mục tham khảo: Author. (Year). <em>Title</em>. Publisher. DOI nếu có.</p>
+                                <div class="mb-2"><strong>In-text:</strong> <code>(Nguyen &amp; Tran, 2020)</code></div>
+                                <div><strong>Reference (book):</strong></div>
+                                <pre class="example">Nguyen, T., &amp; Tran, K. (2020). <em>Machine learning in education</em>. Oxford University Press.</pre>
 
-    <p>Trong một thế giới ngập tràn thông tin, việc phân biệt giữa sự thật và tin đồn chưa bao giờ quan trọng hơn. Hệ thống của chúng tôi giải quyết thách thức đó bằng cách sàng lọc, xác minh và tổ chức hàng ngàn tài liệu khoa học, kết quả thử nghiệm lâm sàng, và báo cáo nghiên cứu từ các nguồn uy tín toàn cầu.</p>
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary copy-btn" data-copy='Nguyen, T., &amp; Tran, K. (2020). Machine learning in education. Oxford University Press.'><i class="fa-regular fa-copy me-1"></i>Copy APA</button>
+                                    <button class="btn btn-sm btn-light" onclick="alert('Gợi ý: Luôn cập nhật DOI nếu có.');"><i class="fa-solid fa-info"></i> Tip</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <p><strong>Scientific Evidence Bank</strong> không chỉ là một thư viện; đó là <strong>công cụ đắc lực</strong> giúp các nhà nghiên cứu, nhà hoạch định chính sách, doanh nghiệp và công chúng tiếp cận <strong>sức mạnh của bằng chứng</strong>. Dù bạn cần xác thực một giả thuyết y khoa, đánh giá rủi ro môi trường, hay xây dựng một chiến lược dựa trên dữ liệu, hệ thống của chúng tôi cung cấp kết quả tra cứu tức thì, trích dẫn rõ ràng, và tính năng so sánh trực quan.</p>
+                    <!-- MLA -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingMLA">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMLA" aria-expanded="false" aria-controls="collapseMLA">
+                                <strong>MLA (Modern Language Association)</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseMLA" class="accordion-collapse collapse" aria-labelledby="headingMLA" data-bs-parent="#citationAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Thường dùng:</strong> ngữ văn, nhân văn, văn học.</p>
+                                <p><strong>Đặc điểm:</strong> In-text: (Author page). Works Cited: Author. <em>Title</em>. Publisher, Year.</p>
+                                <div class="mb-2"><strong>In-text:</strong> <code>(Smith 125)</code></div>
+                                <div><strong>Works Cited:</strong></div>
+                                <pre class="example">Smith, John. <em>Cultural Identity in Literature</em>. Cambridge UP, 2018.</pre>
 
-    <p><strong>Ngừng phỏng đoán – Bắt đầu hành động dựa trên chứng cứ vững chắc.</strong> Hãy để Scientific Evidence Bank trở thành nền tảng đáng tin cậy cho mọi khám phá và quyết định của bạn.</p>
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary copy-btn" data-copy='Smith, John. Cultural Identity in Literature. Cambridge UP, 2018.'><i class="fa-regular fa-copy me-1"></i>Copy MLA</button>
+                                    <button class="btn btn-sm btn-light" onclick="alert('Gợi ý: MLA dùng nhiều cho bài luận văn học.');"><i class="fa-solid fa-info"></i> Tip</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IEEE -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingIEEE">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIEEE" aria-expanded="false" aria-controls="collapseIEEE">
+                                <strong>IEEE</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseIEEE" class="accordion-collapse collapse" aria-labelledby="headingIEEE" data-bs-parent="#citationAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Thường dùng:</strong> kỹ thuật, CNTT, điện – điện tử.</p>
+                                <p><strong>Đặc điểm:</strong> Trích dẫn bằng số theo thứ tự xuất hiện: <code>[1]</code>. Danh mục tham khảo đánh số theo thứ tự.</p>
+                                <div class="mb-2"><strong>In-text:</strong> <code>[5]</code></div>
+                                <div><strong>Reference (journal):</strong></div>
+                                <pre class="example">[5] T. Nguyen and H. Tran, "Deep learning for image recognition," <em>IEEE Journal of AI</em>, vol. 12, no. 4, pp. 22-30, 2021.</pre>
+
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary copy-btn" data-copy='[5] T. Nguyen and H. Tran, "Deep learning for image recognition," IEEE Journal of AI, vol. 12, no. 4, pp. 22-30, 2021.'><i class="fa-regular fa-copy me-1"></i>Copy IEEE</button>
+                                    <button class="btn btn-sm btn-light" onclick="alert('Gợi ý: Các tài liệu tham khảo được đánh số theo thứ tự xuất hiện.');"><i class="fa-solid fa-info"></i> Tip</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Harvard -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingHarvard">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHarvard" aria-expanded="false" aria-controls="collapseHarvard">
+                                <strong>Harvard (Author-Date)</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseHarvard" class="accordion-collapse collapse" aria-labelledby="headingHarvard" data-bs-parent="#citationAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Thường dùng:</strong> kinh tế, quản trị, một số ngành xã hội.</p>
+                                <p><strong>Đặc điểm:</strong> Giống APA: (Author, Year). Reference: Author (Year) <em>Title</em>, Publisher.</p>
+                                <div class="mb-2"><strong>In-text:</strong> <code>(Kotler, 2019)</code></div>
+                                <div><strong>Reference:</strong></div>
+                                <pre class="example">Kotler, P. (2019) <em>Marketing 5.0</em>, Pearson.</pre>
+
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary copy-btn" data-copy='Kotler, P. (2019) Marketing 5.0, Pearson.'><i class="fa-regular fa-copy me-1"></i>Copy Harvard</button>
+                                    <button class="btn btn-sm btn-light" onclick="alert('Gợi ý: Harvard khá linh hoạt, kiểm tra yêu cầu trường.');"><i class="fa-solid fa-info"></i> Tip</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chicago -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingChicago">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChicago" aria-expanded="false" aria-controls="collapseChicago">
+                                <strong>Chicago (Notes & Bibliography / Author-Date)</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseChicago" class="accordion-collapse collapse" aria-labelledby="headingChicago" data-bs-parent="#citationAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Thường dùng:</strong> lịch sử, nghệ thuật, nhân văn.</p>
+                                <p><strong>Đặc điểm:</strong> Có 2 biến thể: <em>Notes &amp; Bibliography</em> dùng footnote; <em>Author-Date</em> gần giống Harvard.</p>
+
+                                <div class="mb-2"><strong>Footnote example (Notes & Bibliography):</strong></div>
+                                <pre class="example">1. John Smith, <em>Modern History of Asia</em> (New York: History Press, 2017), 215.</pre>
+
+                                <div class="mb-2"><strong>Author-Date example:</strong></div>
+                                <pre class="example">(Smith 2017, 215)</pre>
+
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary copy-btn" data-copy='John Smith, Modern History of Asia (New York: History Press, 2017), 215.'><i class="fa-regular fa-copy me-1"></i>Copy Chicago</button>
+                                    <button class="btn btn-sm btn-light" onclick="alert('Gợi ý: Lựa chọn biến thể tùy yêu cầu nhà xuất bản / trường.');"><i class="fa-solid fa-info"></i> Tip</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Comparison table -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title section-title">So sánh nhanh</h5>
+                        <div class="table-responsive">
+                            <table class="table compare-table">
+                                <thead>
+                                    <tr>
+                                        <th>Kiểu</th>
+                                        <th>Lĩnh vực</th>
+                                        <th>Trích dẫn trong văn bản</th>
+                                        <th>Danh mục tham khảo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>APA</strong></td>
+                                        <td>Xã hội, giáo dục</td>
+                                        <td>(Author, Year)</td>
+                                        <td>Author. (Year). <em>Title</em>. Publisher.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>MLA</strong></td>
+                                        <td>Ngữ văn, nhân văn</td>
+                                        <td>(Author Page)</td>
+                                        <td>Author. <em>Title</em>. Publisher, Year.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>IEEE</strong></td>
+                                        <td>Kỹ thuật, CNTT</td>
+                                        <td>[n]</td>
+                                        <td>[n] Author, "Title," Journal, vol., no., pp., Year.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Harvard</strong></td>
+                                        <td>Kinh tế, quản trị</td>
+                                        <td>(Author, Year)</td>
+                                        <td>Author (Year) <em>Title</em>, Publisher.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Chicago</strong></td>
+                                        <td>Lịch sử, nghệ thuật</td>
+                                        <td>Footnote / (Author Year)</td>
+                                        <td>Footnote or Bibliography entry.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right column: quick tips + image -->
+            <div class="col-lg-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="section-title">Quick Tips</h6>
+                        <ul>
+                            <li>Luôn kiểm tra yêu cầu của trường/tạp chí trước khi chọn style.</li>
+                            <li>Ưu tiên DOI khi có (APA/IEEE).</li>
+                            <li>Sử dụng citation manager (Zotero, Mendeley) để tự động hóa.</li>
+                            <li>Với nhiều tác giả, tuân theo quy định từng style về cách ghi.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="section-title">Trích dẫn</h6>
+                        <!-- local uploaded image path (will be transformed by system) -->
+                        <img src="~/Content/img/Albert-Einstein.jpg" alt="reference" class="ref-image mt-2" />
+                        <div class="mt-2 text-muted" style="font-size:13px;">Einstein, Albert.&quot;Nếu bạn không thể giải thích một sự việc một cách đơn giản, tức là bạn hiểu nó chưa đủ&quot;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-4 text-muted" style="font-size:13px;">
+            Mẫu nhanh: Bạn có thể click <span class="badge bg-light text-dark">Copy</span> để lấy mẫu citation, hoặc nhờ mình sinh citation chính xác từ một Evidence cụ thể.
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Copy to clipboard handler -->
+    <script>
+    document.addEventListener('click', function (e) {
+      const t = e.target;
+      const btn = t.closest('.copy-btn');
+      if (!btn) return;
+      const text = btn.getAttribute('data-copy') || '';
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.innerHTML = '<i class=\"fa-regular fa-check me-1\"></i>Copied';
+        setTimeout(() => btn.innerHTML = '<i class=\"fa-regular fa-copy me-1\"></i>Copy', 1400);
+      });
+    });
+    </script>
 </main>
+
+@section styles{
+    
+    <style>
+        body {
+            background: #f7f9ff;
+            color: #10203a;
+            padding: 20px;
+            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg,#dbe9ff,#ecf4ff);
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: #0b2a66;
+        }
+
+        .example {
+            background: #0f1724;
+            color: #f1f5f9;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: "Courier New", monospace;
+        }
+
+        .copy-btn {
+            min-width: 120px;
+        }
+
+        .compare-table th {
+            background: #e9f0ff;
+        }
+
+        .ref-image {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 6px 18px rgba(12,34,89,0.06);
+        }
+
+        .badge-style {
+            background: #e6f0ff;
+            color: #0b2a66;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            padding: 6px 10px;
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+        }
+    </style>    
+}

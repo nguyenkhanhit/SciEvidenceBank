@@ -137,7 +137,7 @@ body {
 
 /* Sidebar */
 .sidebar-surface {
-    width: 260px;
+    width: 300px;
     padding: 16px;
     background: linear-gradient(180deg, var(--muted-surface), var(--surface));
     border-radius: 8px;

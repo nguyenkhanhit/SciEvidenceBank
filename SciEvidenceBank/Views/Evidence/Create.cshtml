@@ -1,75 +1,158 @@
 ﻿@model SciEvidenceBank.ViewModels.EvidenceEditViewModel
 
 @{
-    ViewBag.Title = "Create Evidence";
+    ViewBag.Title = "Create";
 }
 
-<h2>Create Evidence</h2>
+<h2>Đóng góp Dẫn chứng</h2>
 
-@using (Html.BeginForm("Create", "Evidence", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "evidenceCreateForm" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Evidence.Title)
-        @Html.TextBoxFor(m => m.Evidence.Title, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Evidence.Title, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* Title *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Evidence.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Evidence.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Evidence.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Authors *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Evidence.Authors, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Evidence.Authors, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Evidence.Authors, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* URL field *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Evidence.Url, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Evidence.Url, new { htmlAttributes = new { @class = "form-control", placeholder = "https://..." } })
+                @Html.ValidationMessageFor(m => m.Evidence.Url, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Category dropdown — binds to Evidence.CategoryId *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Evidence.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.Evidence.CategoryId,
+                         new SelectList(ViewBag.Categories as IEnumerable<SciEvidenceBank.Models.Category>, "Id", "Name", Model?.Evidence?.CategoryId),
+                         "-- select --",
+                         new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Evidence.CategoryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Status dropdown (Enum) *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Evidence.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.Evidence.Status, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Evidence.Status, "", new { @class = "text-danger" })
+                <p class="help-block">If you are not an admin/teacher your submission will be forced to Pending.</p>
+            </div>
+        </div>
+
+        @* AbstractText with TinyMCE targetting this textarea *@
+        <div class="form-group">
+            @Html.LabelFor(m => m.Evidence.AbstractText, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Evidence.AbstractText, new { @class = "form-control", id = "AbstractText", rows = 12 })
+                @Html.ValidationMessageFor(m => m.Evidence.AbstractText, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @* Research fields checkboxes *@
+        <div class="form-group">
+            @Html.Label("Research fields", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model?.AllFields != null && Model.AllFields.Any())
+                {
+                    foreach (var f in Model.AllFields)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="selectedFieldIds" value="@f.Id" @(f.Selected ? "checked" : "") />
+                                @Html.Encode(f.Name)
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No research fields available.</p>
+                }
+            </div>
+        </div>
+
+        @* Tags input *@
+        <div class="form-group">
+            @Html.Label("Tags (comma-separated)", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" id="tagInput" class="form-control" placeholder="e.g. nutrition, randomized trial" />
+                <p class="help-block">Separate tags with commas. They will be created if missing.</p>
+            </div>
+        </div>
+
+        @* Submit *@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
     </div>
+}
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Evidence.Authors)
-        @Html.TextBoxFor(m => m.Evidence.Authors, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Evidence.Authors, "", new { @class = "text-danger" })
-    </div>
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Evidence.Source)
-        @Html.TextBoxFor(m => m.Evidence.Source, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Evidence.Source, "", new { @class = "text-danger" })
-    </div>
+@section Scripts {
+    <script src="~/assets/tinymce/tinymce.min.js"></script>
+    <script>
+        (function () {
+            if (typeof tinymce !== "undefined") {
+                tinymce.init({
+                    selector: '#AbstractText',
+                    height: 320,
+                    plugins: 'lists link image paste code',
+                    toolbar: 'undo redo | styleselect | bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent | link image | removeformat | code',
+                    menubar: false,
+                    branding: false,
+                    content_css: '/Content/Site.css'
+                });
+            }
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Evidence.Year)
-        @Html.TextBoxFor(m => m.Evidence.Year, new { @class = "form-control", type = "number" })
-        @Html.ValidationMessageFor(m => m.Evidence.Year, "", new { @class = "text-danger" })
-    </div>
+            var form = document.getElementById('evidenceCreateForm');
+            form.addEventListener('submit', function (e) {
+                Array.from(form.querySelectorAll('input[name="tags"]')).forEach(function (el) { el.parentNode.removeChild(el); });
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Evidence.AbstractText)
-        @Html.TextAreaFor(m => m.Evidence.AbstractText, 6, 80, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Evidence.AbstractText, "", new { @class = "text-danger" })
-    </div>
+                var csv = document.getElementById('tagInput').value || '';
+                var parts = csv.split(',').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 0; });
+                parts.forEach(function (t) {
+                    var inp = document.createElement('input');
+                    inp.type = 'hidden';
+                    inp.name = 'tags';
+                    inp.value = t;
+                    form.appendChild(inp);
+                });
 
-    <div class="form-group">
-        @Html.Label("File (path or URL)")
-        @Html.TextBoxFor(m => m.Evidence.FilePath, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Evidence.FilePath, "", new { @class = "text-danger" })
-    </div>
+                if (window.tinymce && tinymce.get('AbstractText')) {
+                    tinymce.get('AbstractText').save();
+                }
+            });
+        })();
+    </script>
 
-    <div class="form-group">
-        <label>
-            @Html.CheckBoxFor(m => m.Evidence.IsPublished) Published
-        </label>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Evidence.Status)
-        @Html.TextBoxFor(m => m.Evidence.Status, new { @class = "form-control" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Evidence.ApprovedByName)
-        @Html.TextBoxFor(m => m.Evidence.ApprovedByName, new { @class = "form-control" })
-    </div>
-
-    <hr />
-
-    @* Research field selector partial - renders checkboxes named "selectedFieldIds" *@
-    @Html.Partial("_ResearchFieldSelector", Model.AllFields)
-
-    <div class="form-group" style="margin-top:12px;">
-        <input type="submit" value="Create" class="btn btn-success" />
-        @Html.ActionLink("Cancel", "Index", "Evidence", null, new { @class = "btn btn-default", style = "margin-left:8px;" })
-    </div>
+    @Scripts.Render("~/bundles/jqueryval")
 }

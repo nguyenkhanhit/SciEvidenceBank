@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using SciEvidenceBank.Models;
+using SciEvidenceBank.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,6 +13,18 @@ namespace SciEvidenceBank.Controllers
     {
         public ActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                // create a short-lived context to fetch recommendations
+                using (var db = new ApplicationDbContext())
+                {
+                    var svc = new RecommendationService(db);
+                    var userId = User.Identity.GetUserId();
+                    var recs = svc.GetRecommendationsForUser(userId, top: 5).Select(r => r.Evidence).ToList();
+                    ViewBag.Recommendations = recs;
+                }
+            }
+
             return View();
         }
 

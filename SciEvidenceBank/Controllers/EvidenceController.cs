@@ -90,37 +90,71 @@ namespace SciEvidenceBank.Controllers
                 return View(vm);
             }
 
+            // If tags came as a single CSV because client didn't split (fallback), try to parse
+            if ((tags == null || tags.Length == 0) && !string.IsNullOrWhiteSpace(Request.Form["tagInput"]))
+            {
+                tags = Request.Form["tagInput"].Split(',')
+                          .Select(t => t.Trim())
+                          .Where(t => !string.IsNullOrWhiteSpace(t))
+                          .ToArray();
+            }
+
             var model = vm.Evidence;
             model.CreatedAt = DateTime.UtcNow;
             model.CreatedById = User.Identity.GetUserId();
             model.CreatedByName = User.Identity.Name;
-            model.Status = EvidenceStatus.Pending;
-            model.IsPublished = false;
-
-            db.Evidences.Add(model);
-            db.SaveChanges();
-
-            // persist many-to-many research fields
-            selectedFieldIds = selectedFieldIds ?? new int[0];
-            foreach (var fid in selectedFieldIds)
+            // Only allow privileged users to set status/published flags from the form
+            if (!User.IsInRole("Teacher") && !User.IsInRole("Admin"))
             {
-                db.Set<EvidenceResearchField>().Add(new EvidenceResearchField { EvidenceId = model.Id, ResearchFieldId = fid });
+                model.Status = EvidenceStatus.Pending;
+                model.IsPublished = false;
             }
-            db.SaveChanges();
-
-            if (tags != null)
+            else
             {
-                foreach (var t in tags.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    var tag = db.Tags.FirstOrDefault(x => x.Name == t) ?? new Tag { Name = t };
-                    if (tag.Id == 0) db.Tags.Add(tag);
-                    db.SaveChanges();
+                // admin/teacher-provided values are respected
+                // ensure a sensible default if not provided
+                model.Status = vm.Evidence.Status;
+                model.IsPublished = vm.Evidence.IsPublished;
+            }
 
-                    if (!db.EvidenceTags.Any(et => et.EvidenceId == model.Id && et.TagId == tag.Id))
+            selectedFieldIds = selectedFieldIds ?? new int[0];
+            tags = tags ?? new string[0];
+
+            using (var tx = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Add evidence (tracked)
+                    db.Evidences.Add(model);
+
+                    // Add research field relations (use navigation so EF sets FK)
+                    foreach (var fid in selectedFieldIds.Distinct())
                     {
-                        db.EvidenceTags.Add(new EvidenceTag { EvidenceId = model.Id, TagId = tag.Id });
-                        db.SaveChanges();
+                        db.Set<EvidenceResearchField>().Add(new EvidenceResearchField { Evidence = model, ResearchFieldId = fid });
                     }
+
+                    // Handle tags: reuse existing Tag rows or create new, then link via EvidenceTag
+                    foreach (var t in tags.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase))
+                    {
+                        var tag = db.Tags.FirstOrDefault(x => x.Name.Equals(t, StringComparison.OrdinalIgnoreCase));
+                        if (tag == null)
+                        {
+                            tag = new Tag { Name = t };
+                            db.Tags.Add(tag);
+                        }
+
+                        // Create EvidenceTag if not already scheduled (prevent duplicates)
+                        // We cannot query db.EvidenceTags for model.Id before save; check by tag object reference/name
+                        db.EvidenceTags.Add(new EvidenceTag { Evidence = model, Tag = tag });
+                    }
+
+                    db.SaveChanges();
+                    tx.Commit();
+                }
+                catch
+                {
+                    tx.Rollback();
+                    throw;
                 }
             }
 
@@ -206,56 +240,38 @@ namespace SciEvidenceBank.Controllers
             }).ToList();
         }
 
+       
         // GET: Edit
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            var evidence = db.Set<Evidence>().Include("EvidenceResearchFields").SingleOrDefault(e => e.Id == id);
-            if (evidence == null) return HttpNotFound();
-
-            var selected = evidence.EvidenceResearchFields?.Select(x => x.ResearchFieldId).ToArray() ?? new int[0];
-            var vm = new SciEvidenceBank.ViewModels.EvidenceEditViewModel
+            if (id == null)
             {
-                Evidence = evidence,
-                AllFields = LoadFieldItemsFor(selected)
-            };
-            return View(vm);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Evidence evidence = db.Evidences.Find(id);
+            if (evidence == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
+            return View(evidence);
         }
 
-        // POST: Edit
+        // POST: Evidences/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(SciEvidenceBank.ViewModels.EvidenceEditViewModel vm, int[] selectedFieldIds)
+        public ActionResult Edit([Bind(Include = "Id,Title,Authors,Source,Year,AbstractText,Url,FilePath,IsPublished,Status,ApprovedById,ApprovedByName,ApprovedAt,CreatedAt,CreatedById,CreatedByName,LikesCount,BookmarksCount,ViewsCount,CitationCount,CategoryId")] Evidence evidence)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                vm.AllFields = LoadFieldItemsFor(selectedFieldIds);
-                return View(vm);
+                db.Entry(evidence).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
-
-            var evidence = db.Set<Evidence>().Include("EvidenceResearchFields").SingleOrDefault(e => e.Id == vm.Evidence.Id);
-            if (evidence == null) return HttpNotFound();
-
-            // update scalar properties - map as needed
-            db.Entry(evidence).CurrentValues.SetValues(vm.Evidence);
-
-            // sync many-to-many via EvidenceResearchField
-            var current = evidence.EvidenceResearchFields?.ToList() ?? new List<EvidenceResearchField>();
-            selectedFieldIds = selectedFieldIds ?? new int[0];
-
-            // remove unselected
-            foreach (var rel in current.Where(r => !selectedFieldIds.Contains(r.ResearchFieldId)).ToList())
-            {
-                db.Set<EvidenceResearchField>().Remove(rel);
-            }
-
-            // add new
-            foreach (var fid in selectedFieldIds.Where(fid => !current.Any(r => r.ResearchFieldId == fid)))
-            {
-                db.Set<EvidenceResearchField>().Add(new EvidenceResearchField { EvidenceId = evidence.Id, ResearchFieldId = fid });
-            }
-
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
+            return View(evidence);
         }
         // GET: Evidences/Delete/5
         public ActionResult Delete(int? id)
