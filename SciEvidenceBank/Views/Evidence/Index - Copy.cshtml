@@ -1,0 +1,80 @@
+﻿@model IEnumerable<SciEvidenceBank.Models.Evidence>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Scientific Evidence Bank";
+    var currentQuery = Request.QueryString["q"] ?? string.Empty;
+}
+
+<div class="evidence-page" style="background:var(--page-bg);min-height:720px;color:var(--text);padding:24px;">
+    <div style="display:flex;gap:18px;">
+        <div>
+            @Html.Partial("_Sidebar")
+        </div>
+
+        <div style="flex:1;">
+            <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;">
+                <h2>Dẫn chứng khoa học</h2>
+
+                <form method="get" action="@Url.Action("Index","Evidence")" style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" name="q" id="searchBox" value="@Html.Raw(Html.Encode(currentQuery))" placeholder="Tìm kiếm..." style="padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);width:320px;" />
+                    <button type="submit" class="btn-primary-theme">Tìm</button>
+                </form>
+            </div>
+
+            <div id="evidenceList">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var e in Model)
+                    {
+                        @Html.Partial("_EvidenceCard", e)
+                    }
+                }
+                else
+                {
+                    <div class="empty" style="padding:24px;background:var(--muted-surface);border-radius:8px;color:var(--muted-text);">
+                        Không có kết quả.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            // Search autosuggest using simple GET
+            $("#q").autocomplete({
+                source: function (req, res) {
+                    $.getJSON('@Url.Action("SearchSuggestions","Evidence")', { term: req.term }, res);
+                },
+                minLength: 2,
+                select: function (e, ui) {
+                    $("#q").val(ui.item.value);
+                    // submit search
+                    var q = $("#q").val();
+                    window.location = '@Url.Action("Index","Evidence")' + '?q=' + encodeURIComponent(q);
+                }
+            });
+
+            // Grid/list toggle (demo - only CSS inlined here could be extended)
+            $("#btn-grid").on('click', function () {
+                $("#results").children().css('display', 'block');
+            });
+            $("#btn-list").on('click', function () {
+                $("#results").children().css('display', 'block');
+            });
+
+            var input = document.getElementById('searchBox');
+            if (!input) return;
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    input.value = '';
+                }
+            });
+        });
+    </script>
+
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+}

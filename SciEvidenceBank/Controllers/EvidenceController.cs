@@ -46,6 +46,70 @@ namespace SciEvidenceBank.Controllers
             ViewBag.TopLiked = db.Evidences.OrderByDescending(e => e.LikesCount).Take(3).ToList();
             ViewBag.TopCited = db.Evidences.OrderByDescending(e => e.CitationCount).Take(3).ToList();
             ViewBag.Categories = db.Categories.ToList();
+
+            // Recommendations (based on user's Interests) and user's citations
+            if (User?.Identity?.IsAuthenticated == true)
+            {
+                var userId = User.Identity.GetUserId();
+
+                // load user's selected category interests
+                var interestIds = db.UserInterests
+                    .Where(ui => ui.UserId == userId)
+                    .Select(ui => ui.CategoryId)
+                    .ToList();
+
+                List<Evidence> recommendations;
+                if (interestIds != null && interestIds.Any())
+                {
+                    // get approved/published evidences in the user's interest categories
+                    recommendations = db.Evidences
+                        .Where(e => e.Status == EvidenceStatus.Approved && e.IsPublished && e.CategoryId != null && interestIds.Contains(e.CategoryId.Value))
+                        .OrderByDescending(e => e.LikesCount)
+                        .ThenByDescending(e => e.CreatedAt)
+                        .Take(5)
+                        .Include(e => e.Category)
+                        .ToList();
+                }
+                else
+                {
+                    // fallback: top liked evidences
+                    recommendations = db.Evidences
+                        .Where(e => e.Status == EvidenceStatus.Approved && e.IsPublished)
+                        .OrderByDescending(e => e.LikesCount)
+                        .ThenByDescending(e => e.CreatedAt)
+                        .Take(5)
+                        .Include(e => e.Category)
+                        .ToList();
+                }
+
+                ViewBag.Recommendations = recommendations;
+
+                // load user's citations + join to Evidence so view can show evidence title/link
+                var citations = db.MyCitations
+                    .Where(mc => mc.UserId == userId)
+                    .OrderByDescending(mc => mc.CreatedAt)
+                    .Take(6)
+                    .Join(db.Evidences,
+                          mc => mc.EvidenceId,
+                          e => e.Id,
+                          (mc, e) => new { Citation = mc, Evidence = e })
+                    .ToList();
+
+                ViewBag.UserCitations = citations;
+            }
+            else
+            {
+                // not authenticated: small fallback so view can render consistently
+                ViewBag.Recommendations = db.Evidences
+                    .Where(e => e.Status == EvidenceStatus.Approved && e.IsPublished)
+                    .OrderByDescending(e => e.LikesCount)
+                    .Take(5)
+                    .Include(e => e.Category)
+                    .ToList();
+
+                ViewBag.UserCitations = Enumerable.Empty<object>().ToList();
+            }
+
             return View(results);
         }
 
@@ -197,37 +261,7 @@ namespace SciEvidenceBank.Controllers
             // You can create a SearchViewModel for pagination; for brevity return Index view with results
             return View("Index", results);
         }
-        //public ActionResult Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Evidence evidence = db.Evidences.Find(id);
-        //    if (evidence == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
-        //    return View(evidence);
-        //}
-
-        //// POST: Evidences/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "Id,Title,Authors,Source,Year,AbstractText,Url,FilePath,IsPublished,Status,ApprovedById,ApprovedByName,ApprovedAt,CreatedAt,CreatedById,CreatedByName,LikesCount,BookmarksCount,ViewsCount,CitationCount,CategoryId")] Evidence evidence)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(evidence).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
-        //    return View(evidence);
-        //}
+        
         private List<SciEvidenceBank.ViewModels.FieldItem> LoadFieldItemsFor(int[] selected = null)
         {
             var all = db.Set<ResearchField>().ToList();

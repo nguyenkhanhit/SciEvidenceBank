@@ -230,6 +230,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
+    <Compile Include="Controllers\EvidenceController - Copy.cs" />
     <Compile Include="Controllers\EvidencesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InterestsController.cs" />
@@ -556,6 +557,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="TextFile1.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -620,6 +622,7 @@
     <Content Include="Views\Interests\Select.cshtml" />
     <Content Include="Views\Shared\_Recommendations.cshtml" />
     <Content Include="Views\Evidence\Edit.cshtml" />
+    <Content Include="Views\Evidence\Index - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
