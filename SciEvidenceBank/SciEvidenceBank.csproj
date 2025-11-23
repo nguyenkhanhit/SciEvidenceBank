@@ -172,6 +172,7 @@
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\EvidencesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InterestsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\CitationsController.cs" />
     <Compile Include="Controllers\MyCitationsController.cs" />
@@ -198,18 +199,34 @@
     <Compile Include="Migrations\202511221054090_citationcount.Designer.cs">
       <DependentUpon>202511221054090_citationcount.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202511230120599_addResearchFields.cs" />
+    <Compile Include="Migrations\202511230120599_addResearchFields.Designer.cs">
+      <DependentUpon>202511230120599_addResearchFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202511230150226_addResearchFields2.cs" />
+    <Compile Include="Migrations\202511230150226_addResearchFields2.Designer.cs">
+      <DependentUpon>202511230150226_addResearchFields2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202511230305469_addResearchFields22.cs" />
+    <Compile Include="Migrations\202511230305469_addResearchFields22.Designer.cs">
+      <DependentUpon>202511230305469_addResearchFields22.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Evidence.cs" />
     <Compile Include="Controllers\EvidenceController.cs" />
+    <Compile Include="Models\EvidenceField.cs" />
+    <Compile Include="Models\EvidenceResearchField.cs" />
     <Compile Include="Models\EvidenceTag.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MyCitation.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AiSuggestionService.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\EvidenceEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\SciEvidenceBank.mdf" />
@@ -539,6 +556,8 @@
     <Content Include="Views\Evidence\Delete.cshtml" />
     <Content Include="Views\Evidence\Edit.cshtml" />
     <Content Include="Views\Evidence\_Sidebar - Copy.cshtml" />
+    <Content Include="Views\Shared\_ResearchFieldSelector.cshtml" />
+    <Content Include="Views\Interests\Select.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -583,6 +602,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202511221054090_citationcount.resx">
       <DependentUpon>202511221054090_citationcount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202511230120599_addResearchFields.resx">
+      <DependentUpon>202511230120599_addResearchFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202511230150226_addResearchFields2.resx">
+      <DependentUpon>202511230150226_addResearchFields2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202511230305469_addResearchFields22.resx">
+      <DependentUpon>202511230305469_addResearchFields22.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

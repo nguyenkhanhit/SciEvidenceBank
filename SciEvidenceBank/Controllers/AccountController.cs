@@ -17,6 +17,7 @@ namespace SciEvidenceBank.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public AccountController()
         {
@@ -79,7 +80,16 @@ namespace SciEvidenceBank.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+
+                    // find user and check whether they already selected interests
+                    var user = await UserManager.FindByNameAsync(model.Email);
+                    var hasInterests = db.UserInterests.Any(ui => ui.UserId == user.Id);
+                    if (!hasInterests)
+                    {
+                        return RedirectToAction("Select", "Interests", new { returnUrl });
+                    }
                     return RedirectToLocal(returnUrl);
+                   
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -155,15 +165,9 @@ namespace SciEvidenceBank.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                    return RedirectToAction("Index", "Home");
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    // Redirect immediately to interest selection
+                    return RedirectToAction("Select", "Interests");
                 }
                 AddErrors(result);
             }

@@ -1,6 +1,8 @@
 using Microsoft.AspNet.Identity;
 using SciEvidenceBank.Models;
+using SciEvidenceBank.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -62,34 +64,48 @@ namespace SciEvidenceBank.Controllers
             return View(evidence);
         }
 
-        // GET: /Evidence/Create
+        // C#
         [Authorize]
         public ActionResult Create()
         {
             ViewBag.Categories = db.Categories.ToList();
-            return View();
+            var vm = new EvidenceEditViewModel
+            {
+                Evidence = new Evidence(),                 // empty evidence for the form
+                AllFields = LoadFieldItemsFor(null)        // loads available research fields
+            };
+            return View(vm);
         }
 
-        // POST: /Evidence/Create
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult Create(Evidence model, string[] tags)
+        public ActionResult Create(EvidenceEditViewModel vm, int[] selectedFieldIds, string[] tags)
         {
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = db.Categories.ToList();
-                return View(model);
+                vm.AllFields = LoadFieldItemsFor(selectedFieldIds);
+                return View(vm);
             }
 
+            var model = vm.Evidence;
             model.CreatedAt = DateTime.UtcNow;
             model.CreatedById = User.Identity.GetUserId();
             model.CreatedByName = User.Identity.Name;
             model.Status = EvidenceStatus.Pending;
-            model.IsPublished = false; // will be set on approval
+            model.IsPublished = false;
 
             db.Evidences.Add(model);
+            db.SaveChanges();
+
+            // persist many-to-many research fields
+            selectedFieldIds = selectedFieldIds ?? new int[0];
+            foreach (var fid in selectedFieldIds)
+            {
+                db.Set<EvidenceResearchField>().Add(new EvidenceResearchField { EvidenceId = model.Id, ResearchFieldId = fid });
+            }
             db.SaveChanges();
 
             if (tags != null)
@@ -147,54 +163,100 @@ namespace SciEvidenceBank.Controllers
             // You can create a SearchViewModel for pagination; for brevity return Index view with results
             return View("Index", results);
         }
-
-        // Child action to render sidebar partial with top liked & cited (call from _Layout or wherever)
-        //[ChildActionOnly]
-        //public ActionResult Sidebar()
+        //public ActionResult Edit(int? id)
         //{
-        //    var topLiked = db.Evidences.OrderByDescending(e => e.LikesCount).Take(3).ToList();
-        //    var topCited = db.Evidences.OrderByDescending(e => e.CitationCount).Take(3).ToList();
-
-        //    var vm = new SidebarViewModel
+        //    if (id == null)
         //    {
-        //        TopLiked = topLiked,
-        //        TopCited = topCited
-        //    };
-
-        //    return PartialView("_Sidebar", vm);
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Evidence evidence = db.Evidences.Find(id);
+        //    if (evidence == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
+        //    return View(evidence);
         //}
-        public ActionResult Edit(int? id)
+
+        //// POST: Evidences/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "Id,Title,Authors,Source,Year,AbstractText,Url,FilePath,IsPublished,Status,ApprovedById,ApprovedByName,ApprovedAt,CreatedAt,CreatedById,CreatedByName,LikesCount,BookmarksCount,ViewsCount,CitationCount,CategoryId")] Evidence evidence)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(evidence).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
+        //    return View(evidence);
+        //}
+        private List<SciEvidenceBank.ViewModels.FieldItem> LoadFieldItemsFor(int[] selected = null)
         {
-            if (id == null)
+            var all = db.Set<ResearchField>().ToList();
+            var sel = selected != null ? new HashSet<int>(selected) : new HashSet<int>();
+            return all.Select(f => new SciEvidenceBank.ViewModels.FieldItem
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Evidence evidence = db.Evidences.Find(id);
-            if (evidence == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
-            return View(evidence);
+                Id = f.Id,
+                Name = f.Name,
+                Selected = sel.Contains(f.Id)
+            }).ToList();
         }
 
-        // POST: Evidences/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // GET: Edit
+        public ActionResult Edit(int id)
+        {
+            var evidence = db.Set<Evidence>().Include("EvidenceResearchFields").SingleOrDefault(e => e.Id == id);
+            if (evidence == null) return HttpNotFound();
+
+            var selected = evidence.EvidenceResearchFields?.Select(x => x.ResearchFieldId).ToArray() ?? new int[0];
+            var vm = new SciEvidenceBank.ViewModels.EvidenceEditViewModel
+            {
+                Evidence = evidence,
+                AllFields = LoadFieldItemsFor(selected)
+            };
+            return View(vm);
+        }
+
+        // POST: Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Authors,Source,Year,AbstractText,Url,FilePath,IsPublished,Status,ApprovedById,ApprovedByName,ApprovedAt,CreatedAt,CreatedById,CreatedByName,LikesCount,BookmarksCount,ViewsCount,CitationCount,CategoryId")] Evidence evidence)
+        public ActionResult Edit(SciEvidenceBank.ViewModels.EvidenceEditViewModel vm, int[] selectedFieldIds)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                db.Entry(evidence).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                vm.AllFields = LoadFieldItemsFor(selectedFieldIds);
+                return View(vm);
             }
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", evidence.CategoryId);
-            return View(evidence);
-        }
 
+            var evidence = db.Set<Evidence>().Include("EvidenceResearchFields").SingleOrDefault(e => e.Id == vm.Evidence.Id);
+            if (evidence == null) return HttpNotFound();
+
+            // update scalar properties - map as needed
+            db.Entry(evidence).CurrentValues.SetValues(vm.Evidence);
+
+            // sync many-to-many via EvidenceResearchField
+            var current = evidence.EvidenceResearchFields?.ToList() ?? new List<EvidenceResearchField>();
+            selectedFieldIds = selectedFieldIds ?? new int[0];
+
+            // remove unselected
+            foreach (var rel in current.Where(r => !selectedFieldIds.Contains(r.ResearchFieldId)).ToList())
+            {
+                db.Set<EvidenceResearchField>().Remove(rel);
+            }
+
+            // add new
+            foreach (var fid in selectedFieldIds.Where(fid => !current.Any(r => r.ResearchFieldId == fid)))
+            {
+                db.Set<EvidenceResearchField>().Add(new EvidenceResearchField { EvidenceId = evidence.Id, ResearchFieldId = fid });
+            }
+
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         // GET: Evidences/Delete/5
         public ActionResult Delete(int? id)
         {

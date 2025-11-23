@@ -26,16 +26,25 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Trang chủ", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Giới thiệu", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Dẫn chứng", "Index", "Evidence", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Introduction", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Evidences", "Index", "Evidence", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("My Citations", "Index", "MyCitations", new { area = "" }, new { @class = "nav-link" })</li>
 
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Select", "Interests")">
+                                My Interests
+                            </a>
+                        </li>
+                    }
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
                             <a class="nav-link" href="@Url.Action("Create", "Evidence")">
-                                Đóng góp
+                                Contribute
                             </a>
                         </li>
                     }
@@ -56,7 +65,7 @@
                                 <li><a class="dropdown-item" href="@Url.Action("Index", "Categories")">Quản lý thể loại</a></li>
                                 <li><a class="dropdown-item" href="@Url.Action("EviIndex", "Evidence")">Quản lý dẫn chứng</a></li>
                                 <li><a class="dropdown-item" href="@Url.Action("Index", "Users")">Quản lý người dùng</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Index", "Categories")">Quản lý danh mục</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index", "Interests")">Quản lý danh mục</a></li>
 
                                 <li><hr class="dropdown-divider" /></li>
 
@@ -65,7 +74,7 @@
                         </li>
                     }
 
-                    <li>@Html.ActionLink("Liên hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Contact us", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

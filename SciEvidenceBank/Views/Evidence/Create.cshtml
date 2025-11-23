@@ -1,93 +1,75 @@
-﻿@model SciEvidenceBank.Models.Evidence
+﻿@model SciEvidenceBank.ViewModels.EvidenceEditViewModel
 
 @{
     ViewBag.Title = "Create Evidence";
-    var categories = ViewBag.Categories as IEnumerable<SciEvidenceBank.Models.Category>;
 }
 
-<h2>Đóng góp dẫn chứng</h2>
+<h2>Create Evidence</h2>
 
 @using (Html.BeginForm("Create", "Evidence", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <div>
-        @Html.LabelFor(m => m.Title)
-        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", maxlength = 350 })
-        @Html.ValidationMessageFor(m => m.Title)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Evidence.Title)
+        @Html.TextBoxFor(m => m.Evidence.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Evidence.Title, "", new { @class = "text-danger" })
     </div>
 
-    <div>
-        @Html.LabelFor(m => m.Authors)
-        @Html.TextBoxFor(m => m.Authors, new { @class = "form-control", maxlength = 500 })
-        @Html.ValidationMessageFor(m => m.Authors)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Evidence.Authors)
+        @Html.TextBoxFor(m => m.Evidence.Authors, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Evidence.Authors, "", new { @class = "text-danger" })
     </div>
 
-    <div>
-        @Html.LabelFor(m => m.Source)
-        @Html.TextBoxFor(m => m.Source, new { @class = "form-control", maxlength = 500 })
-        @Html.ValidationMessageFor(m => m.Source)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Evidence.Source)
+        @Html.TextBoxFor(m => m.Evidence.Source, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Evidence.Source, "", new { @class = "text-danger" })
     </div>
 
-    <div>
-        @Html.LabelFor(m => m.Year)
-        @Html.TextBoxFor(m => m.Year, new { @class = "form-control", type = "number", min = "0" })
-        @Html.ValidationMessageFor(m => m.Year)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Evidence.Year)
+        @Html.TextBoxFor(m => m.Evidence.Year, new { @class = "form-control", type = "number" })
+        @Html.ValidationMessageFor(m => m.Evidence.Year, "", new { @class = "text-danger" })
     </div>
 
-    <div>
-        @Html.Label("Category")
-        @Html.DropDownListFor(m => m.CategoryId,
-                 new SelectList(categories ?? Enumerable.Empty<SciEvidenceBank.Models.Category>(), "Id", "Name"),
-                 "-- Select --",
-                 new { @class = "form-control" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Evidence.AbstractText)
+        @Html.TextAreaFor(m => m.Evidence.AbstractText, 6, 80, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Evidence.AbstractText, "", new { @class = "text-danger" })
     </div>
 
-    <div style="margin-top:12px;">
-        @Html.LabelFor(m => m.AbstractText, "Content")
-        @Html.TextAreaFor(m => m.AbstractText, new { @id = "AbstractText", @class = "form-control tinymce", rows = 10 })
-        @Html.ValidationMessageFor(m => m.AbstractText)
-        <small class="form-text text-muted">You may use the rich text editor to format the evidence content.</small>
+    <div class="form-group">
+        @Html.Label("File (path or URL)")
+        @Html.TextBoxFor(m => m.Evidence.FilePath, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Evidence.FilePath, "", new { @class = "text-danger" })
     </div>
 
-    <div style="margin-top:12px;">
-        <label>Tags (comma separated)</label>
-        <input type="text" name="tags" class="form-control" placeholder="tag1, tag2, tag3" />
+    <div class="form-group">
+        <label>
+            @Html.CheckBoxFor(m => m.Evidence.IsPublished) Published
+        </label>
     </div>
 
-    <div style="margin-top:12px;">
-        <button type="submit" class="btn btn-primary">Create</button>
-        @Html.ActionLink("Back to list", "Index", "Evidence", null, new { @class = "btn btn-link" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Evidence.Status)
+        @Html.TextBoxFor(m => m.Evidence.Status, new { @class = "form-control" })
     </div>
-}
 
-@section scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    <div class="form-group">
+        @Html.LabelFor(m => m.Evidence.ApprovedByName)
+        @Html.TextBoxFor(m => m.Evidence.ApprovedByName, new { @class = "form-control" })
+    </div>
 
-    <!-- TinyMCE (local file) -->
-    <script src="~/assets/tinymce/tinymce.min.js"></script>
-    <script>
-        tinymce.init({
-            selector: '#AbstractText',
-            height: 350,
-            menubar: false,
-            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount',
-            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | code',
-            content_css: '@Url.Content("~/Content/theme.css")',
-            relative_urls: false,
-            remove_script_host: false,
-            convert_urls: true,
-            setup: function (editor) {
-                // Ensure textarea is updated when editor changes and on form submit
-                editor.on('change', function () {
-                    tinymce.triggerSave();
-                });
-            }
-        });
+    <hr />
 
-        // ensure TinyMCE content saved on normal form submission too
-        $('form').on('submit', function () {
-            if (tinymce.get('AbstractText')) tinymce.get('AbstractText').save();
-        });
-    </script>
+    @* Research field selector partial - renders checkboxes named "selectedFieldIds" *@
+    @Html.Partial("_ResearchFieldSelector", Model.AllFields)
+
+    <div class="form-group" style="margin-top:12px;">
+        <input type="submit" value="Create" class="btn btn-success" />
+        @Html.ActionLink("Cancel", "Index", "Evidence", null, new { @class = "btn btn-default", style = "margin-left:8px;" })
+    </div>
 }

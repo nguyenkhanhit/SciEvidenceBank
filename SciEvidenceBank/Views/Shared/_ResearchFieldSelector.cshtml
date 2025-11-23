@@ -1,0 +1,14 @@
+﻿@model IEnumerable<SciEvidenceBank.ViewModels.FieldItem>
+
+<div class="research-fields">
+    <label>Research fields</label>
+    <div>
+        @foreach (var f in Model)
+        {
+            <label style="display:block;">
+                <input type="checkbox" name="selectedFieldIds" value="@f.Id" @(f.Selected ? "checked=\"checked\"" : "") />
+                @f.Name
+            </label>
+        }
+    </div>
+</div>

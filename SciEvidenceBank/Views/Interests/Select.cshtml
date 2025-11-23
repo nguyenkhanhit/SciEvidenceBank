@@ -1,0 +1,46 @@
+﻿@model List<SciEvidenceBank.ViewModels.FieldItem>
+
+@{
+    ViewBag.Title = "Select your topics (categories)";
+}
+
+<h2>Select your topics</h2>
+<p>Choose the categories (e.g. Literature, Mathematics, Biology) that match your interests. You can update these later from your profile.</p>
+
+@using (Html.BeginForm("Select", "Interests", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("returnUrl", ViewBag.ReturnUrl as string)
+
+    if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">No categories available.</div>
+    }
+    else
+    {
+        <div class="form-group">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var item = Model[i];
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="selectedFieldIds" value="@item.Id" @(item.Selected ? "checked=\"checked\"" : "") />
+                        @Html.Raw(item.Name)
+                    </label>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="form-group" style="margin-top:12px;">
+        <button type="submit" class="btn btn-primary">Save interests</button>
+        @if (!string.IsNullOrEmpty(ViewBag.ReturnUrl as string) && Url.IsLocalUrl(ViewBag.ReturnUrl as string))
+        {
+            <a class="btn btn-default" href="@ViewBag.ReturnUrl" style="margin-left:8px;">Cancel</a>
+        }
+        else
+        {
+            <a class="btn btn-default" href="@Url.Action("Index", "Home")" style="margin-left:8px;">Cancel</a>
+        }
+    </div>
+}
